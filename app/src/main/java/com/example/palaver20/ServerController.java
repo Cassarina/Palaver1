@@ -41,6 +41,8 @@ public class ServerController {
                         try {
                             if(response.get("MsgType").equals(1)){
                                 Intent intent = new Intent(context, UserScreen.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 context.startActivity(intent);
                             }
                         } catch (JSONException e) {
