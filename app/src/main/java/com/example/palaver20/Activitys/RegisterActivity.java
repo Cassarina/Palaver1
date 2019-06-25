@@ -1,4 +1,4 @@
-package com.example.palaver20;
+package com.example.palaver20.Activitys;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +8,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
+import com.example.palaver20.R;
+import com.example.palaver20.Server.RequestQueueSingleton;
+import com.example.palaver20.Server.ServerController;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,7 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                s.sendRequest(url, json, requestQueue);
+                s.sendUserdata(url, json, requestQueue);
 
 
             }

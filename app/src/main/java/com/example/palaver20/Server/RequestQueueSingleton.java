@@ -1,4 +1,4 @@
-package com.example.palaver20;
+package com.example.palaver20.Server;
 import android.content.Context;
 
 import com.android.volley.Request;

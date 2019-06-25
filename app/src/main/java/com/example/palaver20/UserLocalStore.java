@@ -3,6 +3,12 @@ package com.example.palaver20;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
+
+import com.example.palaver20.Activitys.LoginActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -16,6 +22,10 @@ public class UserLocalStore {
     private static final String IS_LOGIN = "IsLoggedIn";
     public static final String KEY_USERNAME = "username";
     public static final String KEY_PASSWORT = "passwort";
+    public static final String KEY_FRIEND = "friend";
+    public static final String KEY_FRIENDSLIST_RESPONSE = "response";
+    public static String user;
+    public static String pass;
 
     public UserLocalStore(Context context){
         this.ctx = context;
@@ -30,9 +40,14 @@ public class UserLocalStore {
         editor.commit();
     }
 
+    public void  setSessionDetails (String name, String passwort){
+        user=name;
+        pass=passwort;
+    }
+
     public void checkLogin(){
         if(!this.isLoggedIn()){
-            Intent i = new Intent(ctx,LoginActivity.class);
+            Intent i = new Intent(ctx, LoginActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             ctx.startActivity(i);
@@ -53,6 +68,28 @@ public class UserLocalStore {
     public void logoutUser(){
         editor.putBoolean(IS_LOGIN, false);
         editor.clear();
+        editor.commit();
+    }
+
+    public String getUser(){
+        return pref.getString(KEY_USERNAME, null);
+    }
+
+    public String getKeyFriendslistResponse(){
+        return pref.getString(KEY_FRIENDSLIST_RESPONSE, null);
+    }
+
+    public String getPass(){
+        return pref.getString(KEY_PASSWORT, null);
+    }
+
+    public void sharedResponse(JSONObject jsonObject) throws JSONException {
+        String temp = jsonObject.toString();
+        temp.substring(temp.indexOf("(") + 1);
+        temp = temp.substring(temp.indexOf("[") + 1, temp.indexOf("]"));
+        temp = temp.replaceAll("\"", "");
+        Log.i("Zu Speichern", temp);
+        editor.putString(KEY_FRIENDSLIST_RESPONSE, temp);
         editor.commit();
     }
 

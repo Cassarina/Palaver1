@@ -1,14 +1,18 @@
-package com.example.palaver20;
+package com.example.palaver20.Activitys;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
+import com.example.palaver20.R;
+import com.example.palaver20.Server.RequestQueueSingleton;
+import com.example.palaver20.Server.ServerController;
+import com.example.palaver20.UserLocalStore;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,7 +51,9 @@ public class LoginActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                s.sendRequest(url, json, requestQueue);
+                s.sendUserdata(url, json, requestQueue);
+                userLocalStore.setSessionDetails(username.getText().toString(), passwort.getText().toString());
+                userLocalStore.createLoginSession(username.getText().toString(), passwort.getText().toString());
             }
         });
 
