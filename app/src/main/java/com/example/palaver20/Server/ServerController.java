@@ -24,7 +24,6 @@ public class ServerController {
     static RequestQueue requestQueue;
     static final String url = "http://palaver.se.paluno.uni-due.de";
     private Activity context;
-    Kontakt kontakt;
 
     public ServerController(Activity Context){
         this.context = Context;
@@ -70,7 +69,7 @@ public class ServerController {
         RequestQueueSingleton.getInstance().addToRequestQueue(joreq);
     }
 
-    public void addFriendRequest(JSONObject json, RequestQueue requestQueue){
+    public void addFriendRequest(final JSONObject json, RequestQueue requestQueue, final String namen){
         RequestQueue req = requestQueue;
         String adr = url+ "/api/friends/add";
         final JsonObjectRequest joreq = new JsonObjectRequest(Request.Method.POST,
@@ -79,6 +78,11 @@ public class ServerController {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.i("Antwort:", response.toString());
+                        try {
+                            friendAdd(response, namen);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         try {
                             if(response.get("MsgType").equals(1)&&response.get("Info").equals("Freund hinzugefügt")) {
                                 Intent intent = new Intent(context, MainActivity.class);
@@ -127,8 +131,8 @@ public class ServerController {
 
     public void getFriendsListFromServer() {
 
+
         userLocalStore = new UserLocalStore(context);
-        Log.i("!!!Nutzer!!!!", userLocalStore.getUser() + " " + userLocalStore.getPass());
 
         final JSONObject json = new JSONObject();
         try {
@@ -141,12 +145,10 @@ public class ServerController {
         requestQueue = RequestQueueSingleton.getInstance(context).getRequestQueue();
         String adr = url + "/api/friends/get ";
 
-
         final JsonObjectRequest joreq = new JsonObjectRequest(Request.Method.POST, adr, json,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-
                         try {
                             userLocalStore.sharedResponse(response);
                         } catch (JSONException e) {
@@ -155,8 +157,9 @@ public class ServerController {
                         try {
                             if (response.get("MsgType").equals(1) && response.get("Info").equals("Freunde aufgelistet")) {
                                 String temp = response.toString();
-                                temp.substring(temp.indexOf("(") + 1);
+                                //temp.substring(temp.indexOf("(") + 1);
                                 temp = temp.substring(temp.indexOf("[") + 1, temp.indexOf("]"));
+                                temp.split(",");
                                 Log.i("Freundesliste:", temp);
                             }
                         } catch (JSONException e) {
@@ -213,5 +216,11 @@ public class ServerController {
         RequestQueueSingleton.getInstance().addToRequestQueue(joreq);
     }
 
+    public void friendAdd(JSONObject jsonObject, String string) throws JSONException {
+        userLocalStore = new UserLocalStore(context);
+        if(jsonObject.get("MsgType").equals(1)&& jsonObject.get("Info").equals("Freund hinzugefügt")) {
+            userLocalStore.updateList(string);
+        }
+    }
 
 }

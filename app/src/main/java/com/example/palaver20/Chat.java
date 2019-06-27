@@ -1,7 +1,5 @@
 package com.example.palaver20;
 
-import java.sql.Time;
-
 public class Chat {
 
     String name;

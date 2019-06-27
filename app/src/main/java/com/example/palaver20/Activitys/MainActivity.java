@@ -15,6 +15,7 @@ import com.example.palaver20.FragmentEinstellung;
 import com.example.palaver20.FragmentKontakte;
 import com.example.palaver20.PagerAdapter;
 import com.example.palaver20.R;
+import com.example.palaver20.Server.ServerController;
 import com.example.palaver20.UserLocalStore;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private PagerAdapter adapter;
     UserLocalStore userLocalStore;
+    ServerController serverController;
     Boolean logged;
 
 
@@ -32,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
+        serverController = new ServerController(MainActivity.this);
+        serverController.getFriendsListFromServer();
         userLocalStore = new UserLocalStore(getApplicationContext());
         logged = userLocalStore.isLoggedIn();
         Log.i("Nutzer", userLocalStore.getUserDetails().toString());

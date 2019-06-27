@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -30,15 +31,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class FragmentKontakte extends Fragment {
+public class FragmentKontakte extends Fragment{
 
     View v;
-    ServerController s;
+    UserLocalStore userLocalStore;
     private RecyclerView myrecyclerview;
-    public List<Kontakt> lstKontakt;
     Dialog dialog;
 
-    public FragmentKontakte() {
+    public FragmentKontakte(){
+    }
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
     }
 
@@ -46,9 +52,11 @@ public class FragmentKontakte extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        userLocalStore = new UserLocalStore(getActivity());
+        final List<String> kontaktList = userLocalStore.createKontaktListe();
         v = inflater.inflate(R.layout.fragment_kontakt, container,false);
         myrecyclerview = (RecyclerView) v.findViewById(R.id.rv_kontakte);
-        final RecycleViewAdapterKontakte recycleViewAdapterKontakte = new RecycleViewAdapterKontakte(getContext(), lstKontakt);
+        final RecycleViewAdapterKontakte recycleViewAdapterKontakte = new RecycleViewAdapterKontakte(kontaktList);
         myrecyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
         myrecyclerview.setAdapter(recycleViewAdapterKontakte);
         FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.fab);
@@ -78,39 +86,13 @@ public class FragmentKontakte extends Fragment {
                         } catch (JSONException e){
                             e.printStackTrace();
                         }
-                        s.addFriendRequest(json, requestQueue);
-                        lstKontakt.add(new Kontakt(namen.getText().toString()));
+                        s.addFriendRequest(json, requestQueue, namen.getText().toString());
                         dialog.cancel();
-                        recycleViewAdapterKontakte.notifyItemInserted(lstKontakt.size()+1);
+                        recycleViewAdapterKontakte.notifyItemInserted(kontaktList.size()+ 1);
                     }
                 });
             }
         });
         return v;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        lstKontakt = new ArrayList<>();
-        s = new ServerController(getActivity());
-        s.getFriendsListFromServer();
-        final UserLocalStore userLocalStore = new UserLocalStore(getActivity());
-        String response = userLocalStore.getKeyFriendslistResponse();
-        lstKontakt = createKontaktList(response);
-        Log.i("Gespeicherter Response", userLocalStore.getKeyFriendslistResponse());
-    }
-
-    public List<Kontakt> createKontaktList (String string){
-        Log.i("String!", string);
-        List<Kontakt> konList = new ArrayList<Kontakt>();
-        String k[] = string.split(",");
-        for(int i = 0; i < k.length; i++){
-            konList.add(new Kontakt(k[i]));
-        }
-        Log.i("Liste:", konList.toString());
-
-        return konList;
     }
 }
