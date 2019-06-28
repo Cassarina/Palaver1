@@ -8,9 +8,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
 import com.example.palaver20.R;
-import com.example.palaver20.Server.RequestQueueSingleton;
 import com.example.palaver20.Server.ServerController;
 import com.example.palaver20.UserLocalStore;
 
@@ -20,7 +18,6 @@ import org.json.JSONObject;
 public class LoginActivity extends AppCompatActivity {
 
     UserLocalStore userLocalStore;
-    private RequestQueue requestQueue;
     ServerController s = new ServerController(LoginActivity.this);
 
     @Override
@@ -34,11 +31,7 @@ public class LoginActivity extends AppCompatActivity {
         final TextView passwort = findViewById(R.id.logA_passwort);
         final Button login = findViewById(R.id.btn_la_login);
         final Button signin = findViewById(R.id.btn_la_sigin);
-
         final JSONObject json = new JSONObject();
-
-        requestQueue = RequestQueueSingleton.getInstance(this.getApplicationContext()).getRequestQueue();
-
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,13 +43,11 @@ public class LoginActivity extends AppCompatActivity {
                 } catch (JSONException e){
                     e.printStackTrace();
                 }
-
-                s.sendUserdata(url, json, requestQueue);
+                s.sendUserdata(url, json);
                 userLocalStore.setSessionDetails(username.getText().toString(), passwort.getText().toString());
                 userLocalStore.createLoginSession(username.getText().toString(), passwort.getText().toString());
             }
         });
-
         signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

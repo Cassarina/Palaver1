@@ -1,18 +1,14 @@
-package com.example.palaver20;
+package com.example.palaver20.Kontaktliste;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,14 +16,14 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
-import com.example.palaver20.Activitys.MainActivity;
+import com.example.palaver20.R;
 import com.example.palaver20.Server.RequestQueueSingleton;
 import com.example.palaver20.Server.ServerController;
+import com.example.palaver20.UserLocalStore;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -86,7 +82,7 @@ public class FragmentKontakte extends Fragment{
                         } catch (JSONException e){
                             e.printStackTrace();
                         }
-                        s.addFriendRequest(json, requestQueue, namen.getText().toString());
+                        s.addFriendRequest(json, namen.getText().toString());
                         dialog.cancel();
                         recycleViewAdapterKontakte.notifyItemInserted(kontaktList.size()+ 1);
                     }

@@ -10,7 +10,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.palaver20.Activitys.MainActivity;
-import com.example.palaver20.Kontakt;
 import com.example.palaver20.UserLocalStore;
 
 import org.json.JSONException;
@@ -32,9 +31,7 @@ public class ServerController {
         return sInstance;
     }
 
-    public void sendUserdata(String uRl, JSONObject json, RequestQueue requestQueue) {
-
-        RequestQueue req = requestQueue;
+    public void sendUserdata(String uRl, JSONObject json) {
         String adr = url+uRl;
         final JsonObjectRequest joreq = new JsonObjectRequest(Request.Method.POST,
                 adr, json,
@@ -69,8 +66,7 @@ public class ServerController {
         RequestQueueSingleton.getInstance().addToRequestQueue(joreq);
     }
 
-    public void addFriendRequest(final JSONObject json, RequestQueue requestQueue, final String namen){
-        RequestQueue req = requestQueue;
+    public void addFriendRequest(final JSONObject json, final String namen){
         String adr = url+ "/api/friends/add";
         final JsonObjectRequest joreq = new JsonObjectRequest(Request.Method.POST,
                 adr, json,
@@ -108,8 +104,7 @@ public class ServerController {
         RequestQueueSingleton.getInstance().addToRequestQueue(joreq);
     }
 
-    public void deleteFriend(String uRl, JSONObject json, RequestQueue requestQueue){
-        RequestQueue req = requestQueue;
+    public void deleteFriend(String uRl, JSONObject json){
         String adr = url+uRl;
         final JsonObjectRequest joreq = new JsonObjectRequest(Request.Method.POST,
                 adr, json,
@@ -131,9 +126,7 @@ public class ServerController {
 
     public void getFriendsListFromServer() {
 
-
         userLocalStore = new UserLocalStore(context);
-
         final JSONObject json = new JSONObject();
         try {
             json.put("Username", userLocalStore.getUser());
@@ -141,10 +134,8 @@ public class ServerController {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         requestQueue = RequestQueueSingleton.getInstance(context).getRequestQueue();
         String adr = url + "/api/friends/get ";
-
         final JsonObjectRequest joreq = new JsonObjectRequest(Request.Method.POST, adr, json,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -176,10 +167,8 @@ public class ServerController {
         RequestQueueSingleton.getInstance().addToRequestQueue(joreq);
     }
 
-    public void sendMessage(JSONObject json, RequestQueue requestQueue){
+    public void sendMessage(JSONObject json){
         String adr = url + "/api/message/send ";
-        requestQueue = RequestQueueSingleton.getInstance(context).getRequestQueue();
-
         final JsonObjectRequest joreq = new JsonObjectRequest(Request.Method.POST, adr, json,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -196,10 +185,8 @@ public class ServerController {
         RequestQueueSingleton.getInstance().addToRequestQueue(joreq);
     }
 
-    public void getAllMessages(JSONObject json, RequestQueue requestQueue){
+    public void getAllMessages(JSONObject json){
         String adr = url + "/api/message/get ";
-        requestQueue = RequestQueueSingleton.getInstance(context).getRequestQueue();
-
         final JsonObjectRequest joreq = new JsonObjectRequest(Request.Method.POST, adr, json,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -219,8 +206,26 @@ public class ServerController {
     public void friendAdd(JSONObject jsonObject, String string) throws JSONException {
         userLocalStore = new UserLocalStore(context);
         if(jsonObject.get("MsgType").equals(1)&& jsonObject.get("Info").equals("Freund hinzugefügt")) {
-            userLocalStore.updateList(string);
+            userLocalStore.updateKontaktList(string);
         }
+    }
+
+    public void updatePushtoken(JSONObject json) {
+        String adr = url + "/api/user/pushtoken";
+        final JsonObjectRequest joreq = new JsonObjectRequest(Request.Method.POST, adr, json,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i("Antwort", response.toString());
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        Log.i("Antwort", error.toString());
+                    }
+                });
+        RequestQueueSingleton.getInstance().addToRequestQueue(joreq);
     }
 
 }

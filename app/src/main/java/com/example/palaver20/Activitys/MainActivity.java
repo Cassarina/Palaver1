@@ -6,13 +6,12 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.support.v7.widget.Toolbar;
 
 
-import com.example.palaver20.FragmentChats;
+import com.example.palaver20.Chatliste.FragmentChats;
 import com.example.palaver20.FragmentEinstellung;
-import com.example.palaver20.FragmentKontakte;
+import com.example.palaver20.Kontaktliste.FragmentKontakte;
 import com.example.palaver20.PagerAdapter;
 import com.example.palaver20.R;
 import com.example.palaver20.Server.ServerController;

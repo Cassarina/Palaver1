@@ -1,21 +1,11 @@
 package com.example.palaver20;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
-
-import com.example.palaver20.Activitys.LoginActivity;
-import com.example.palaver20.Server.ServerController;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,9 +23,10 @@ public class UserLocalStore {
     public static final String KEY_PASSWORT = "passwort";
     public static final String KEY_FRIENDSLIST_RESPONSE = "response";
     public static final String KEY_KONTAKT_LISTE ="kontaktliste";
+    public static final String KEY_CHAT_LIST = "chatliste";
+
     public static String user;
     public static String pass;
-    ServerController s;
     Gson gson = new Gson();
     String json;
 
@@ -73,15 +64,10 @@ public class UserLocalStore {
         editor.putBoolean(IS_LOGIN, false);
         editor.clear();
         editor.commit();
-        //kontaktliste.clear();
     }
 
     public String getUser(){
         return pref.getString(KEY_USERNAME, null);
-    }
-
-    public String getKeyFriendslistResponse(){
-        return pref.getString(KEY_FRIENDSLIST_RESPONSE, null);
     }
 
     public String getPass(){
@@ -109,7 +95,7 @@ public class UserLocalStore {
         return kontaktliste;
     }
 
-    public void updateList(String namen){
+    public void updateKontaktList(String namen){
         String s = KEY_FRIENDSLIST_RESPONSE;
         String neu = s +", " + namen;
         editor.remove(KEY_FRIENDSLIST_RESPONSE);
@@ -117,6 +103,31 @@ public class UserLocalStore {
         editor.commit();
     }
 
+    public void saveChatList(String chatlist){
+        editor.putString(KEY_CHAT_LIST, chatlist);
+        editor.commit();
+    }
 
+    public String getChatList(){
+        //editor.remove(KEY_CHAT_LIST);
+        //editor.commit();
+        Log.i("Chatliste", pref.getString(KEY_CHAT_LIST,""));
+        return pref.getString(KEY_CHAT_LIST,"");
+    }
 
+    public void updateChatList(String string){
+        String s = KEY_CHAT_LIST;
+        if(s.isEmpty() || s.contains("chatliste")){
+            editor.remove(KEY_CHAT_LIST);
+            editor.putString(KEY_CHAT_LIST, string);
+            editor.commit();
+        }
+        else{
+            String neu = s +", " + string;
+            editor.remove(KEY_CHAT_LIST);
+            editor.putString(KEY_CHAT_LIST, neu);
+            editor.commit();
+        }
+
+    }
 }

@@ -1,6 +1,6 @@
-package com.example.palaver20;
+package com.example.palaver20.Chatliste;
 
-import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,36 +10,54 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.palaver20.Activitys.Chatroom;
+import com.example.palaver20.R;
+import com.example.palaver20.UserLocalStore;
+
 import java.util.List;
 
 public class RecycleViewAdapterChats extends RecyclerView.Adapter<RecycleViewAdapterChats.ViewHolderMy> {
 
-    Context context;
-    List<Chat> mData;
+    private List<ChatObject> mData;
+    UserLocalStore userLocalStore;
 
-    public RecycleViewAdapterChats(Context context, List<Chat> mData) {
-        this.context = context;
+    public RecycleViewAdapterChats(List<ChatObject> mData) {
         this.mData = mData;
+
     }
 
     @NonNull
     @Override
-    public RecycleViewAdapterChats.ViewHolderMy onCreateViewHolder(@NonNull ViewGroup parent, int i) {
-        View v;
-        v = LayoutInflater.from(context).inflate(R.layout.item_chats, parent, false);
+    public RecycleViewAdapterChats.ViewHolderMy onCreateViewHolder(@NonNull final ViewGroup parent, int i) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chats, parent, false);
         final ViewHolderMy vHolder = new ViewHolderMy(v);
+        userLocalStore = new UserLocalStore(parent.getContext());
+        vHolder.item_chats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(parent.getContext(), Chatroom.class);
+                intent.putExtra("Name", vHolder.tv_name.getText());
+                parent.getContext().startActivity(intent);
+            }
+        });
         return vHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecycleViewAdapterChats.ViewHolderMy viewHolderMy, int i) {
 
-        viewHolderMy.tv_name.setText(mData.get(i).getName());
+        ChatObject chat = mData.get(i);
+        viewHolderMy.tv_name.setText(chat.getName());
+        viewHolderMy.tv_nachricht.setText(chat.getLastMessage());
+        viewHolderMy.tv_uhrzeit.setText(chat.getTime());
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        if(mData == null){
+            return 0;
+        }else
+            return mData.size();
     }
 
     public static class ViewHolderMy extends RecyclerView.ViewHolder{
